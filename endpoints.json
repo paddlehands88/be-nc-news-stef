@@ -25,5 +25,67 @@
         }
       ]
     }
+  },
+  
+  "GET /api/articles/:article_id/comments": {
+    "description": "responds with a list of comments by article id",
+    "queries": ["**** QUERY 1 TBC ****", "**** QUERY 2 TBC ****", "**** ETC ****"],
+    "exampleResponse": {
+      "comment": {
+        "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        "votes": 16,
+        "author": "butter_bridge",
+        "article_id": 9,
+        "created_at": 1586179020000
+      }
+    }
+  },
+
+  "POST /api/articles/:article_id/comments": {
+
+  },
+
+  "PATCH /api/articles/:article_id": {
+
+  },
+
+  "DELETE /api/comments/:comment_id": {
+
+  },
+
+  "GET /api/users": {
+    "description": "responds with an list of comments by article id",
+    "queries": ["**** QUERY 1 TBC ****", "**** QUERY 2 TBC ****", "**** ETC ****"],
+    "exampleResponse": {
+      "users": {
+        "username": "butter_bridge",
+        "name": "jonny",
+        "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+      }
+    }
+  },
+
+  "GET /api/articles (queries)": {
+    "description": "responds with a list based on query request",
+    "queries": ["**** QUERY 1 TBC ****", "**** QUERY 2 TBC ****", "**** ETC ****"],
+    "exampleResponse": {
+      "**** QUERY KEY *****": {
+        "**** EXAMPLE QUERY KEY ****": "example value"
+      }
+    }
+
+  },
+
+  "GET /api/articles/:article_id (comment count)": {
+    "description": "responds with the number of comments",
+    "queries": ["**** QUERY 1 TBC ****", "**** QUERY 2 TBC ****", "**** ETC ****"],
+    "exampleResponse": {
+      "**** QUERY KEY *****": {
+        "**** EXAMPLE QUERY KEY ****": "example value"
+      }
+    }
   }
+
 }
+
+
