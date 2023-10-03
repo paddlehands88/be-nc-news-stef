@@ -3,6 +3,8 @@ const request = require("supertest");
 const db = require("../db/connection.js");
 const seed = require("../db/seeds/seed.js");
 const data = require("../db/data/test-data");
+const endPoints = require("../endpoints.json");
+
 
 beforeEach(() => {
     return seed(data);
@@ -40,5 +42,20 @@ describe('GET /api/topics', () => {
                 expect(body.message).toBe('Path not found!');
             });
 
+    });
+});
+
+describe('/api', () => {
+    test('responds with a 200 success code', () => {
+        return request(app)
+            .get("/api")
+            .expect(200)
+    });
+    test('returns a JSON object of all the available endpoints and dynamically tests this against the actual endpoints.json object', () => {
+        return request(app)
+            .get("/api")
+            .then(({ body }) => {
+                expect(body.API_Endpoints).toEqual(endPoints);
+            })
     });
 });
