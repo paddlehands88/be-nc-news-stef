@@ -59,3 +59,47 @@ describe('/api', () => {
             })
     });
 });
+
+describe('GET /api/articles/:article_id', () => {
+    test('responds with a 200 success code ', () => {
+        return request(app)
+            .get("/api/articles/4")
+            .expect(200)
+    });
+
+    test('returns article with correct property values', () => {
+        return request(app)
+            .get("/api/articles/4")
+            .then(({ body }) => {    
+                console.log(body.article.article, "TEST"); 
+                expect(body.article.author).toBe('rogersop')
+                expect(body.article.title).toBe('Student SUES Mitch!')
+                expect(body.article.article_id).toBe(4)
+                expect(body.article.body).toBe('We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages')
+                expect(body.article.topic).toBe('mitch')
+                expect(body.article.created_at).toBe('2020-05-06T01:14:00.000Z')
+                expect(body.article.votes).toBe(0)
+                expect(body.article.article_img_url).toBe('https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700')      
+            })      
+    });
+
+    test('responds with a 400 error code when an invalid article_id is requested', () => {
+        return request(app)
+            .get("/api/articles/notAnID")
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.message).toBe('Invalid Input');
+            });
+    });
+
+    test('responds with a 404 error code when an article_id is requested which is not in the database', () => {
+        return request(app)
+            .get("/api/articles/9999")
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.message).toBe("No user found for article_id: 9999");
+            });
+    });
+
+    
+});
