@@ -1,4 +1,4 @@
-const { getTopics, getApiEndpoints, getArticleById } = require("./controllers/nc-news.controller");
+const { getTopics, getArticles, getApiEndpoints, getArticleById } = require("./controllers/nc-news.controller");
 const express = require("express");
 const app = express();
 
@@ -7,6 +7,8 @@ const app = express();
 app.get("/api", getApiEndpoints);
 
 app.get("/api/topics", getTopics);
+
+app.get("/api/articles", getArticles);
 
 app.get("/api/articles/:article_id", getArticleById);
 

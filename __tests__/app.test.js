@@ -71,7 +71,6 @@ describe('GET /api/articles/:article_id', () => {
         return request(app)
             .get("/api/articles/4")
             .then(({ body }) => {    
-                console.log(body.article.article, "TEST"); 
                 expect(body.article.author).toBe('rogersop')
                 expect(body.article.title).toBe('Student SUES Mitch!')
                 expect(body.article.article_id).toBe(4)
@@ -100,6 +99,46 @@ describe('GET /api/articles/:article_id', () => {
                 expect(body.message).toBe("No user found for article_id: 9999");
             });
     });
+});
 
+describe.only('GET /api/articles', () => {
+    test('Returns 200 status code ', () => {
+        return request(app)
+        .get("/api/articles")
+        .expect(200)
+      });
     
+    test('Returns an array of artcle objects, each having the correct type of property', () => {
+        return request(app)
+        .get("/api/articles")
+        .then(({body}) => {
+            expect(typeof(body.articles[0])).toBe('object');
+            body.articles.forEach((article) => {
+                expect(typeof(article.author)).toBe('string')
+                expect(typeof(article.title)).toBe('string')
+                expect(typeof(article.article_id)).toBe('number')
+                expect(typeof(article.created_at)).toBe('string')
+                expect(typeof(article.votes)).toBe('number')
+                expect(typeof(article.article_img_url)).toBe('string')
+                expect(typeof(article.comment_count)).toBe('number')
+            })
+        })
+    });
+
+    test('Should order articles by date in descending order ', () => {
+        return request(app)
+        .get("/api/articles")
+        .then(({body}) => {
+            expect(body.articles).toBeSortedBy('created_at', {descending: true});
+        });
+    });
+    test('receives 404 error status if request not found', () => {
+        return request(app)
+            .get("/api/articlesssss")
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.message).toBe('Path not found!');
+            });
+
+    });
 });
