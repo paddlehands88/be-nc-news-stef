@@ -101,7 +101,7 @@ describe('GET /api/articles/:article_id', () => {
     });
 });
 
-describe.only('GET /api/articles', () => {
+describe('GET /api/articles', () => {
     test('Returns 200 status code ', () => {
         return request(app)
         .get("/api/articles")
@@ -132,13 +132,49 @@ describe.only('GET /api/articles', () => {
             expect(body.articles).toBeSortedBy('created_at', {descending: true});
         });
     });
-    test('receives 404 error status if request not found', () => {
+});
+
+describe('/api/articles/:article_id/comments', () => {
+    test('Returns an array of artcle objects representing comments on specified article_id, each having the correct type of property', () => {
         return request(app)
-            .get("/api/articlesssss")
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({body}) => {
+            expect(typeof(body.comments[0])).toBe('object');
+            body.comments.forEach((comment) => {
+                expect(typeof(comment.comment_id)).toBe('number')
+                expect(typeof(comment.votes)).toBe('number')
+                expect(typeof(comment.created_at)).toBe('string')
+                expect(typeof(comment.author)).toBe('string')
+                expect(typeof(comment.body)).toBe('string')
+                expect(typeof(comment.article_id)).toBe('number')
+            })
+        })
+    });
+    test('Should order comments by date with the most recent comments first', () => {
+        return request(app)
+        .get("/api/articles/1/comments")
+        .then(({body}) => {
+            console.log(body.comments, "TEST");
+            expect(body.comments).toBeSortedBy('created_at', {descending: true});
+        });
+    });
+
+    test('responds with a 400 error code when an invalid article_id is requested', () => {
+        return request(app)
+            .get("/api/articles/notAnID/comments")
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.message).toBe('Invalid Input');
+            });
+    });
+
+    test.only('responds with a 404 error code when an article_id is requested which is not in the database', () => {
+        return request(app)
+            .get("/api/articles/5555/comments")
             .expect(404)
             .then(({ body }) => {
-                expect(body.message).toBe('Path not found!');
+                expect(body.message).toBe("No comments found for article_id: 5555");
             });
-
     });
 });

@@ -29,7 +29,6 @@ exports.fetchArticles = () => {
         GROUP BY articles.article_id
         ORDER BY created_at DESC;`)
         .then(({rows}) => {
-            console.log(rows, "MODEL fetchArticles");
             return rows;
         })
 };
@@ -47,6 +46,22 @@ exports.fetchArticleById = (article_id) => {
                 });
             }       
             return article;
+        })
+};
+
+exports.fetchCommentsByArticleId = (article_id) => {
+    console.log(article_id, "MODEL TOP");
+    return db.query(`SELECT * FROM comments WHERE article_id=$1 ORDER BY created_at DESC;`, [article_id])
+        .then(({rows}) => {
+            const comments = rows;
+            console.log(comments, "rows in MODEL");
+            if (comments.length === 0) {
+                return Promise.reject({
+                    status: 404,
+                    message: `No comments found for article_id: ${article_id}`
+                });
+            }       
+            return comments;
         })
 };
 

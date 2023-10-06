@@ -1,4 +1,4 @@
-const { getTopics, getArticles, getApiEndpoints, getArticleById } = require("./controllers/nc-news.controller");
+const { getTopics, getArticles, getApiEndpoints, getArticleById, getCommentsByArticleId } = require("./controllers/nc-news.controller");
 const express = require("express");
 const app = express();
 
@@ -12,6 +12,8 @@ app.get("/api/articles", getArticles);
 
 app.get("/api/articles/:article_id", getArticleById);
 
+app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
+
 
 
 // ERROR HANDLING MIDDLEWARE 
@@ -24,6 +26,7 @@ app.use((err, req, res, next) => {
 
 app.use((err, req, res, next) => {
     if (err.status && err.message) {
+        console.log(err.status, err.message, "APP.JS");
         res.status(err.status).send({message: err.message});
     } else next(err);
 });
