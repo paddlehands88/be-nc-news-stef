@@ -49,6 +49,19 @@ exports.fetchArticleById = (article_id) => {
     });
 };
 
+exports.postCommentByArticleId = (newCommentObj, article_id) => {
+  const commentBody = newCommentObj.body;
+  const userName = newCommentObj.author;
+  return db
+    .query(
+      `INSERT INTO comments(body, author, article_id) VALUES ($1, $2, $3) RETURNING *;`,
+      [commentBody, userName, article_id]
+    )
+    .then((result) => {
+      return result.rows[0];
+    });
+};
+
 exports.fetchCommentsByArticleId = (article_id) => {
   return db
     .query(
