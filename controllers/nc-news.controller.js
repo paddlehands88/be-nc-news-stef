@@ -3,6 +3,7 @@ const {
   fetchArticles,
   fetchArticleById,
   postCommentByArticleId,
+  fetchCommentsByArticleId,
 } = require("../models/nc-news.model");
 const apiEndpoints = require("../endpoints.json");
 
@@ -36,9 +37,24 @@ exports.getArticleById = (req, res, next) => {
 exports.postComment = (req, res, next) => {
   const { article_id } = req.params;
   const newCommentObject = req.body;
+
   return postCommentByArticleId(newCommentObject, article_id)
     .then((comment) => {
       res.status(201).send({ comment });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.getCommentsByArticleId = (req, res, next) => {
+  const { article_id } = req.params;
+  return fetchArticleById(article_id)
+    .then(() => {
+      return fetchCommentsByArticleId(article_id);
+    })
+    .then((comments) => {
+      res.status(200).send({ comments });
     })
     .catch((err) => {
       next(err);
