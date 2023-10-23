@@ -4,6 +4,8 @@ const {
   fetchArticleById,
   postCommentByArticleId,
   fetchCommentsByArticleId,
+  fetchAndPatchVotesByArticleId,
+  deleteCommentByCommentIdFromDB,
 } = require("../models/nc-news.model");
 const apiEndpoints = require("../endpoints.json");
 
@@ -55,6 +57,32 @@ exports.getCommentsByArticleId = (req, res, next) => {
     })
     .then((comments) => {
       res.status(200).send({ comments });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.patchVotesByArticleId = (req, res, next) => {
+  const { article_id } = req.params;
+  const voteObject = req.body;
+  return fetchArticleById(article_id) //HANDLE 404
+    .then(() => {
+      return fetchAndPatchVotesByArticleId(voteObject, article_id);
+    })
+    .then((article) => {
+      res.status(200).send(article);
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.deleteCommentByCommentId = (req, res, next) => {
+  const { comment_id } = req.params;
+  return deleteCommentByCommentIdFromDB(comment_id)
+    .then(() => {
+      res.sendStatus(204);
     })
     .catch((err) => {
       next(err);

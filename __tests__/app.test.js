@@ -250,10 +250,78 @@ describe("POST /api/articles/:article_id/comments", () => {
   test("status: 404, username not found", () => {
     return request(app)
       .post("/api/articles/1/comments")
-      .send({ author: "kev", body: "test comment" })
+      .send({ author: "stefano", body: "test comment" })
       .expect(404)
       .then(({ body: { message } }) => {
         expect(message).toBe("not found");
+      });
+  });
+});
+
+describe("CORE: PATCH /api/articles/:article_id", () => {
+  test("return a 200 status code and the updated article", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: 1 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article_id).toEqual(1);
+        expect(body.votes).toEqual(101);
+        expect(typeof body.title).toBe("string");
+        expect(typeof body.topic).toBe("string");
+        expect(typeof body.author).toBe("string");
+        expect(typeof body.body).toBe("string");
+        expect(typeof body.created_at).toBe("string");
+        expect(typeof body.votes).toBe("number");
+        expect(typeof body.article_img_url).toBe("string");
+      });
+  });
+  test("responds with a 400 error code when an invalid article_id is requested", () => {
+    return request(app)
+      .patch("/api/articles/NotAnId")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Invalid Input");
+      });
+  });
+  test("responds with a 404 error code when an article_id is requested which is not in the database", () => {
+    return request(app)
+      .get("/api/articles/9999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("Not found!");
+      });
+  });
+  test("Check a 400 error is thrown if the request object property inc_votes is not a number and a response message of Invalid Input ", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: "I'm a string" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Invalid Input");
+      });
+  });
+});
+
+describe.only("DELETE /api/comments/:comment_id", () => {
+  test.only("return a 204 status code and no content", () => {
+    return request(app).delete("/api/comments/1").expect(204);
+  });
+
+  test.only("responds with a 404 error code when an comment_id is requested which is not in the database", () => {
+    return request(app)
+      .delete("/api/comments/999998")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("Not found!");
+      });
+  });
+  test("Check a 400 error is thrown if the request object property inc_votes is not a number and a response message of Invalid Input ", () => {
+    return request(app)
+      .delete("/api/comments/NotAnId")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Invalid Input");
       });
   });
 });

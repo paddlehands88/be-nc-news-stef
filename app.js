@@ -1,3 +1,7 @@
+const cors = require("cors");
+
+app.use(cors());
+
 const {
   getTopics,
   getArticles,
@@ -5,8 +9,11 @@ const {
   getArticleById,
   postComment,
   getCommentsByArticleId,
+  patchVotesByArticleId,
+  deleteCommentByCommentId,
 } = require("./controllers/nc-news.controller");
 const express = require("express");
+
 const app = express();
 
 app.use(express.json());
@@ -22,6 +29,10 @@ app.get("/api/articles/:article_id", getArticleById);
 app.post("/api/articles/:article_id/comments", postComment);
 
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
+
+app.patch("/api/articles/:article_id", patchVotesByArticleId);
+
+app.delete("/api/comments/:comment_id", deleteCommentByCommentId);
 
 app.all("/*", (req, res, next) => {
   res.status(404).send({ message: "Not found!" });

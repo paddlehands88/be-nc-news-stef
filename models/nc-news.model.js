@@ -72,3 +72,34 @@ exports.fetchCommentsByArticleId = (article_id) => {
       return rows;
     });
 };
+
+exports.fetchAndPatchVotesByArticleId = (voteObject, article_id) => {
+  const votesChange = voteObject.inc_votes;
+  return db
+    .query(
+      `UPDATE articles SET votes=votes+$1 WHERE article_id=$2 RETURNING *;`,
+      [votesChange, article_id]
+    )
+    .then((result) => {
+      const article = result.rows[0];
+      return article;
+    });
+};
+
+exports.deleteCommentByCommentIdFromDB = (comment_id) => {
+  return db
+    .query(`DELETE FROM comments WHERE comment_id = $1 RETURNING *;`, [
+      comment_id,
+    ])
+    .then((result) => {
+      const comment = result.rows[0];
+      if (!comment) {
+        return Promise.reject({
+          status: 404,
+          message: "Not found!",
+        });
+      }
+
+      return result.rows;
+    });
+};
