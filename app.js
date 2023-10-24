@@ -1,7 +1,5 @@
 const cors = require("cors");
 
-app.use(cors());
-
 const {
   getTopics,
   getArticles,
@@ -15,6 +13,8 @@ const {
 const express = require("express");
 
 const app = express();
+
+app.use(cors());
 
 app.use(express.json());
 
